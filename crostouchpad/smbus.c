@@ -18,10 +18,24 @@ static void cyapa_set_slave_addr(PCYAPA_CONTEXT pDevice, int smbusread) {
 }
 
 uint32_t cyapa_read_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
+	//check if SMBUS is locked
+	int trieslock = 3;
+	int failslock = 0;
+	int runslock = 0;
+	do { 
+
 	if (pDevice->SMBusLocked) {
 		DbgPrint("SMBus is Locked! Can't use it :(\n");
+		failslock++;
+	}
+	if (failslock >= trieslock) {
 		return 1;
 	}
+
+	runslock++;
+
+	} while (runslock < trieslock);
+
 	pDevice->SMBusLocked = true;
 	pDevice->InterruptRaised = false;
 
@@ -60,10 +74,24 @@ uint32_t cyapa_read_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
 }
 
 uint32_t cyapa_write_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t value) {
+	//check if SMBUS is locked
+	int trieslock = 3;
+	int failslock = 0;
+	int runslock = 0;
+	do { 
+
 	if (pDevice->SMBusLocked) {
 		DbgPrint("SMBus is Locked! Can't use it :(\n");
+		failslock++;
+	}
+	if (failslock >= trieslock) {
 		return 1;
 	}
+
+	runslock++;
+
+	} while (runslock < trieslock);
+
 	pDevice->SMBusLocked = true;
 	pDevice->InterruptRaised = false;
 
@@ -102,10 +130,23 @@ uint32_t cyapa_write_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t value) {
 }
 
 uint32_t cyapa_read_block(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
+	//check if SMBUS is locked
+	int trieslock = 3;
+	int failslock = 0;
+	int runslock = 0;
+	do { 
+
 	if (pDevice->SMBusLocked) {
 		//DbgPrint("SMBus is Locked! Can't use it :(\n");
+		failslock++;
+	}
+	if (failslock >= trieslock) {
 		return 1;
 	}
+
+	runslock++;
+
+	} while (runslock < trieslock);
 
 	if (cmd == 0x99)
 		pDevice->CyapaBlockReadType = 2;
@@ -165,10 +206,25 @@ uint32_t cyapa_read_block(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
 }
 
 uint8_t cyapa_write_block(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t *buf, uint8_t len) {
+	
+	//check if SMBUS is locked
+	int trieslock = 3;
+	int failslock = 0;
+	int runslock = 0;
+	do { 
+
 	if (pDevice->SMBusLocked) {
 		//DbgPrint("SMBus is Locked! Can't use it :(\n");
+		failslock++;
+	}
+	if (failslock >= trieslock) {
 		return 1;
 	}
+
+	runslock++;
+
+	} while (runslock < trieslock);
+
 	//
 	// Get the BUS_INTERFACE_STANDARD for our device so that we can
 	// read & write to PCI config space.
