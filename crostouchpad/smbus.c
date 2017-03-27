@@ -34,10 +34,22 @@ uint32_t cyapa_read_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
 
 	//check if ready
 	int status = inb_p(SMBHSTSTS(pDevice));
+	int tries = 3;
+	int fails = 0;
+	int runs = 0;
+	do { 
+
 	if (status & SMBHSTSTS_HOST_BUSY) {
 		DbgPrint("SMBus is Busy! Can't use it :(\n");
+		fails++;
+	}
+	if (fails >= tries) {
 		return 1;
 	}
+
+	runs++;
+
+	} while (runs < tries);
 
 	outb_p(0x49, SMBHSTCNT(pDevice));
 
@@ -65,10 +77,22 @@ uint32_t cyapa_write_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t value) {
 
 	//check if ready
 	int status = inb_p(SMBHSTSTS(pDevice));
+	int tries = 3;
+	int fails = 0;
+	int runs = 0;
+	do { 
+
 	if (status & SMBHSTSTS_HOST_BUSY) {
 		DbgPrint("SMBus is Busy! Can't use it :(\n");
+		fails++;
+	}
+	if (fails >= tries) {
 		return 1;
 	}
+
+	runs++;
+
+	} while (runs < tries);
 
 	outb_p(0x49, SMBHSTCNT(pDevice));
 
@@ -115,10 +139,22 @@ uint32_t cyapa_read_block(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
 
 	//check if ready
 	int status = inb_p(SMBHSTSTS(pDevice));
+	int tries = 3;
+	int fails = 0;
+	int runs = 0;
+	do { 
+
 	if (status & SMBHSTSTS_HOST_BUSY) {
 		DbgPrint("SMBus is Busy! Can't use it :(\n");
+		fails++;
+	}
+	if (fails >= tries) {
 		return 1;
 	}
+
+	runs++;
+
+	} while (runs < tries);
 
 	outb_p(0x55, SMBHSTCNT(pDevice));
 
@@ -180,10 +216,22 @@ uint8_t cyapa_write_block(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t *buf, uin
 
 	//check if ready
 	int status = inb_p(SMBHSTSTS(pDevice));
+	int tries = 3;
+	int fails = 0;
+	int runs = 0;
+	do { 
+
 	if (status & SMBHSTSTS_HOST_BUSY) {
 		DbgPrint("SMBus is Busy! Can't use it :(\n");
+		fails++;
+	}
+	if (fails >= tries) {
 		goto exit;
 	}
+
+	runs++;
+
+	} while (runs < tries);
 
 	outb_p(len, SMBHSTDAT0(pDevice));
 	outb_p(buf[0], SMBBLKDAT(pDevice));
