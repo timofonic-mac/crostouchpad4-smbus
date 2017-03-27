@@ -206,7 +206,6 @@ uint32_t cyapa_read_block(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
 }
 
 uint8_t cyapa_write_block(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t *buf, uint8_t len) {
-	
 	//check if SMBUS is locked
 	int trieslock = 3;
 	int failslock = 0;
