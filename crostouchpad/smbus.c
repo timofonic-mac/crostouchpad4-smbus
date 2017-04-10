@@ -4,12 +4,12 @@
 
 static unsigned char inb_p(unsigned short int port) {
 	unsigned char value = __inbyte(port);
-	//DbgPrint("SMBus Read 0x%x: 0x%x\n", port, value);
+	DbgPrint("SMBus Read 0x%x: 0x%x\n", port, value);
 	return value;
 }
 
 static void outb_p(unsigned char value, unsigned short int port) {
-	//DbgPrint("SMBus Write 0x%x: 0x%x\n", port, value);
+	DbgPrint("SMBus Write 0x%x: 0x%x\n", port, value);
 	__outbyte(port, value);
 }
 
@@ -137,7 +137,7 @@ uint32_t cyapa_read_block(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
 	do { 
 
 	if (pDevice->SMBusLocked) {
-		//DbgPrint("SMBus is Locked! Can't use it :(\n");
+		DbgPrint("SMBus is Locked! Can't use it :(\n");
 		failslock++;
 	}
 	if (failslock >= trieslock) {
@@ -213,7 +213,7 @@ uint8_t cyapa_write_block(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t *buf, uin
 	do { 
 
 	if (pDevice->SMBusLocked) {
-		//DbgPrint("SMBus is Locked! Can't use it :(\n");
+		DbgPrint("SMBus is Locked! Can't use it :(\n");
 		failslock++;
 	}
 	if (failslock >= trieslock) {
