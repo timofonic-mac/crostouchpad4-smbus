@@ -4,12 +4,12 @@
 
 static unsigned char inb_p(unsigned short int port) {
 	unsigned char value = __inbyte(port);
-	//DbgPrint("SMBus Read 0x%x: 0x%x\n", port, value);
+	DbgPrint("SMBus Read 0x%x: 0x%x\n", port, value);
 	return value;
 }
 
 static void outb_p(unsigned char value, unsigned short int port) {
-	//DbgPrint("SMBus Write 0x%x: 0x%x\n", port, value);
+	DbgPrint("SMBus Write 0x%x: 0x%x\n", port, value);
 	__outbyte(port, value);
 }
 
@@ -18,10 +18,24 @@ static void cyapa_set_slave_addr(PCYAPA_CONTEXT pDevice, int smbusread) {
 }
 
 uint32_t cyapa_read_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
+	//check if SMBUS is locked
+	int trieslock = 3;
+	int failslock = 0;
+	int runslock = 0;
+	do { 
+
 	if (pDevice->SMBusLocked) {
 		DbgPrint("SMBus is Locked! Can't use it :(\n");
+		failslock++;
+	}
+	if (failslock >= trieslock) {
 		return 1;
 	}
+
+	runslock++;
+
+	} while (runslock < trieslock);
+
 	pDevice->SMBusLocked = true;
 	pDevice->InterruptRaised = false;
 
@@ -34,10 +48,22 @@ uint32_t cyapa_read_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
 
 	//check if ready
 	int status = inb_p(SMBHSTSTS(pDevice));
+	int tries = 3;
+	int fails = 0;
+	int runs = 0;
+	do { 
+
 	if (status & SMBHSTSTS_HOST_BUSY) {
 		DbgPrint("SMBus is Busy! Can't use it :(\n");
+		fails++;
+	}
+	if (fails >= tries) {
 		return 1;
 	}
+
+	runs++;
+
+	} while (runs < tries);
 
 	outb_p(0x49, SMBHSTCNT(pDevice));
 
@@ -48,10 +74,24 @@ uint32_t cyapa_read_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
 }
 
 uint32_t cyapa_write_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t value) {
+	//check if SMBUS is locked
+	int trieslock = 3;
+	int failslock = 0;
+	int runslock = 0;
+	do { 
+
 	if (pDevice->SMBusLocked) {
 		DbgPrint("SMBus is Locked! Can't use it :(\n");
+		failslock++;
+	}
+	if (failslock >= trieslock) {
 		return 1;
 	}
+
+	runslock++;
+
+	} while (runslock < trieslock);
+
 	pDevice->SMBusLocked = true;
 	pDevice->InterruptRaised = false;
 
@@ -65,10 +105,22 @@ uint32_t cyapa_write_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t value) {
 
 	//check if ready
 	int status = inb_p(SMBHSTSTS(pDevice));
+	int tries = 3;
+	int fails = 0;
+	int runs = 0;
+	do { 
+
 	if (status & SMBHSTSTS_HOST_BUSY) {
 		DbgPrint("SMBus is Busy! Can't use it :(\n");
+		fails++;
+	}
+	if (fails >= tries) {
 		return 1;
 	}
+
+	runs++;
+
+	} while (runs < tries);
 
 	outb_p(0x49, SMBHSTCNT(pDevice));
 
@@ -78,10 +130,23 @@ uint32_t cyapa_write_byte(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t value) {
 }
 
 uint32_t cyapa_read_block(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
+	//check if SMBUS is locked
+	int trieslock = 3;
+	int failslock = 0;
+	int runslock = 0;
+	do { 
+
 	if (pDevice->SMBusLocked) {
-		//DbgPrint("SMBus is Locked! Can't use it :(\n");
+		DbgPrint("SMBus is Locked! Can't use it :(\n");
+		failslock++;
+	}
+	if (failslock >= trieslock) {
 		return 1;
 	}
+
+	runslock++;
+
+	} while (runslock < trieslock);
 
 	if (cmd == 0x99)
 		pDevice->CyapaBlockReadType = 2;
@@ -115,10 +180,22 @@ uint32_t cyapa_read_block(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
 
 	//check if ready
 	int status = inb_p(SMBHSTSTS(pDevice));
+	int tries = 3;
+	int fails = 0;
+	int runs = 0;
+	do { 
+
 	if (status & SMBHSTSTS_HOST_BUSY) {
 		DbgPrint("SMBus is Busy! Can't use it :(\n");
+		fails++;
+	}
+	if (fails >= tries) {
 		return 1;
 	}
+
+	runs++;
+
+	} while (runs < tries);
 
 	outb_p(0x55, SMBHSTCNT(pDevice));
 
@@ -129,10 +206,24 @@ uint32_t cyapa_read_block(PCYAPA_CONTEXT pDevice, uint8_t cmd) {
 }
 
 uint8_t cyapa_write_block(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t *buf, uint8_t len) {
+	//check if SMBUS is locked
+	int trieslock = 3;
+	int failslock = 0;
+	int runslock = 0;
+	do { 
+
 	if (pDevice->SMBusLocked) {
-		//DbgPrint("SMBus is Locked! Can't use it :(\n");
+		DbgPrint("SMBus is Locked! Can't use it :(\n");
+		failslock++;
+	}
+	if (failslock >= trieslock) {
 		return 1;
 	}
+
+	runslock++;
+
+	} while (runslock < trieslock);
+
 	//
 	// Get the BUS_INTERFACE_STANDARD for our device so that we can
 	// read & write to PCI config space.
@@ -180,10 +271,22 @@ uint8_t cyapa_write_block(PCYAPA_CONTEXT pDevice, uint8_t cmd, uint8_t *buf, uin
 
 	//check if ready
 	int status = inb_p(SMBHSTSTS(pDevice));
+	int tries = 3;
+	int fails = 0;
+	int runs = 0;
+	do { 
+
 	if (status & SMBHSTSTS_HOST_BUSY) {
 		DbgPrint("SMBus is Busy! Can't use it :(\n");
+		fails++;
+	}
+	if (fails >= tries) {
 		goto exit;
 	}
+
+	runs++;
+
+	} while (runs < tries);
 
 	outb_p(len, SMBHSTDAT0(pDevice));
 	outb_p(buf[0], SMBBLKDAT(pDevice));
